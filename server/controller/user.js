@@ -14,39 +14,41 @@ module.exports.login = async (req, res, next) => {
     "local",
     { session: false },
     async (err, user, info) => {
-      if (err) {
-        return next(
-          new ExpressError(401, `Authorization Error : ${err.message}`)
-        );
+      try {
+        if (err) {
+          return next(
+            new ExpressError(401, `Authorization Error : ${err.message}`)
+          );
+        }
+        if (!user) {
+          return next(new ExpressError(401, "Invalid username or password"));
+        }
+        const payload = {
+          sub: user._id,
+          username: user.username,
+        };
+        let tokens = {
+          accessToken: jwt.sign(payload, process.env.ACCESS_TOKEN, {
+            expiresIn: "15m",
+          }),
+          refreshToken: jwt.sign(payload, process.env.REFRESH_TOKEN, {
+            expiresIn: "7d",
+          }),
+        };
+
+        user.refreshToken = tokens.refreshToken;
+        await user.save();
+
+        res.cookie("jwtRefresh", tokens.refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.send(tokens.accessToken);
+      } catch (err) {
+        return next(new ExpressError(500, `Internal Server Error`));
       }
-      if (!user) {
-        return next(new ExpressError(401, "Invalid username or password"));
-      }
-      const payload = {
-        sub: user._id,
-        username: user.username,
-      };
-      let tokens = {
-        accessToken: jwt.sign(payload, process.env.ACCESS_TOKEN, {
-          expiresIn: "15m",
-        }),
-        refreshToken: jwt.sign(payload, process.env.REFRESH_TOKEN, {
-          expiresIn: "7d",
-        }),
-      };
-
-      user.refreshToken = tokens.refreshToken;
-      await user.save().catch((err) => {
-        return next(new ExpressError(500, `User saving problem`));
-      });
-
-      res.cookie("jwtRefresh", tokens.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.send(tokens.accessToken);
     }
   )(req, res, next);
 };
