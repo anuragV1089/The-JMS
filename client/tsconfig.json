@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "useDefineForClassFields": true,
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "module": "es2020",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx", // Important for React JSX
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Path Aliases (Crucial for Shadcn UI) */
+    "baseUrl": ".", // This makes paths relative to the project root
+    "paths": {
+      "@/*": ["./src/*"] // This sets up the @/ alias to point to the src folder
+    }
+  },
+  "include": ["src"] // Tell TypeScript/tools to look in the src folder
+}
