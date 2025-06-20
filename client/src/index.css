@@ -17,6 +17,14 @@ body {
   opacity: 95%;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-transition-delay: 9999s;
+  -webkit-transition: color 9999s ease-out, background-color 9999s ease-out;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -57,8 +65,12 @@ body {
   --color-bauhaus-chronicle-fg: var(----bauhaus-chronicle-fg);
   --color-bauhaus-chronicle-bg: var(----bauhaus-chronicle-bg);
   --color-bauhaus-card-progress-bar-bg: var(----bauhaus-card-progress-bar-bg);
-  --color-bauhaus-card-inscription-progress-value: var(----bauhaus-card-inscription-progress-value);
-  --color-bauhaus-card-inscription-progress-label: var(----bauhaus-card-inscription-progress-label);
+  --color-bauhaus-card-inscription-progress-value: var(
+    ----bauhaus-card-inscription-progress-value
+  );
+  --color-bauhaus-card-inscription-progress-label: var(
+    ----bauhaus-card-inscription-progress-label
+  );
   --color-bauhaus-card-inscription-sub: var(----bauhaus-card-inscription-sub);
   --color-bauhaus-card-inscription-main: var(----bauhaus-card-inscription-main);
   --color-bauhaus-card-inscription-top: var(----bauhaus-card-inscription-top);
@@ -151,7 +163,7 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
   --bauhaus-card-bg: #151419;
-  --bauhaus-card-separator: #2F2B2A;
+  --bauhaus-card-separator: #2f2b2a;
   --bauhaus-card-accent: #156ef6;
   --bauhaus-card-radius: 2em;
   --bauhaus-card-border-width: 2px;

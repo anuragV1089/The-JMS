@@ -1,4 +1,4 @@
-export default function AllJyots() {
+export default function Footer() {
   return (
     <div className="relative bottom-0 w-1/1 border-t-2 border-gray-400 p-4 bg-black min-h-24 text-white flex justify-around items-center">
       <div className="flex flex-col items-center gap-5">
