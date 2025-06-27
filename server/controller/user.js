@@ -6,7 +6,9 @@ const ExpressError = require("../utils/ExpressError");
 module.exports.signUp = async (req, res) => {
   let { username, password } = req.body;
   let registeredUser = await User.register({ username }, password);
-  res.send(registeredUser);
+  res
+    .status(200)
+    .send(`User registered successfully with username- ${username}`);
 };
 
 module.exports.login = async (req, res, next) => {
@@ -45,7 +47,10 @@ module.exports.login = async (req, res, next) => {
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.send(tokens.accessToken);
+        res.send({
+          accessToken: tokens.accessToken,
+          user: { _id: user._id, username: user.username },
+        });
       } catch (err) {
         return next(new ExpressError(500, `Internal Server Error`));
       }
@@ -76,7 +81,10 @@ module.exports.refresh = async (req, res) => {
         },
         (err, token) => {
           if (err) throw new ExpressError(500, `Can't sign token`);
-          res.send(token);
+          res.send({
+            accessToken: token.accessToken,
+            user: { _id: user._id, username: user.username },
+          });
         }
       );
     });

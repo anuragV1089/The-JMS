@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Megrim&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap");
 
 @import "tailwindcss";
 
@@ -7,7 +7,7 @@
 @custom-variant dark (&:is(.dark *));
 
 * {
-  font-family: "Megrim";
+  font-family: "Exo 2", sans-serif;
 }
 
 body {

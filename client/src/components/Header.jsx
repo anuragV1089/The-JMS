@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
+  const { user, logout } = useAuth();
   return (
     <div className="bg-black border-b-2 border-b-gray-400 h-24 text-white flex justify-between items-center p-4 pr-12 font-bold absolute z-50 top-0 w-1/1">
       <div className="flex gap-6 text-3xl items-center">
@@ -51,22 +53,28 @@ export default function Header() {
         </NavLink>
       </div>
       <div className="text-3xl flex gap-4">
-        <NavLink
-          to="/signup"
-          className={({ isActive }) =>
-            `${isActive ? "underline" : "no-underline"}`
-          }
-        >
-          Sign Up
-        </NavLink>
-        <NavLink
-          to="/login"
-          className={({ isActive }) =>
-            `${isActive ? "underline" : "no-underline"}`
-          }
-        >
-          Log In
-        </NavLink>
+        {!user ? (
+          <NavLink
+            to="/signup"
+            className={({ isActive }) =>
+              `${isActive ? "underline" : "no-underline"}`
+            }
+          >
+            Sign Up
+          </NavLink>
+        ) : null}
+        {user ? (
+          <button onClick={logout}>Log Out</button>
+        ) : (
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              `${isActive ? "underline" : "no-underline"}`
+            }
+          >
+            Log In
+          </NavLink>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
+//Cors
+const cors = require("cors");
 //Express
 const express = require("express");
 const app = express();
@@ -32,6 +34,12 @@ async function main() {
   mongoose.connect(process.env.MONGODB_URL);
 }
 
+const corsOptions = {
+  origin: process.env.CLIENT_SIDE_URL,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(cookieParser());
@@ -48,6 +56,9 @@ app.all("*url", (req, res) => {
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Internal Server Error" } = err;
+  if (err.name) {
+    return res.status(statusCode).json({ name: err.name, message: message });
+  }
   res.status(statusCode).json({ message: message });
 });
 

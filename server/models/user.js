@@ -5,7 +5,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const userSchema = Schema({
   refreshToken: {
     type: String,
-    unique: true,
+    // unique: true,
   },
 });
 

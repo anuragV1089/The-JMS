@@ -9,8 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function SignUp() {
+  const backendApi = import.meta.env.VITE_BACKEND_API_URL;
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
       .min(2, "Too Short!")
@@ -25,6 +29,29 @@ export default function SignUp() {
     //   "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     // ),
   });
+
+  // const signUp = async (values) => {
+  //   await axios
+  //     .post(`${backendApi}/users/signup`, values)
+  //     .then(async (response) => {
+  //       const userData = {
+  //         username: values.username,
+  //         password: values.password,
+  //       };
+  //       await axios
+  //         .post(`${backendApi}/users/login`, userData, {
+  //           withCredentials: true,
+  //         })
+  //         .then((response2) => {
+  //           console.log(response2);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
+  const { signup } = useAuth();
   return (
     <div className="min-h-screen flex justify-center items-center">
       <div className="flex flex-col gap-6 bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 rounded-xl p-[2px] mt-20 ">
@@ -42,11 +69,13 @@ export default function SignUp() {
                 password: "",
               }}
               validationSchema={SignupSchema}
-              onSubmit={(values) => {
-                console.log(values);
+              onSubmit={async (values, { setSubmitting }) => {
+                let data = await signup(values);
+                console.log(data);
+                setSubmitting(false);
               }}
             >
-              {({ errors, touched }) => (
+              {({ errors, touched, isSubmitting }) => (
                 <Form className="flex gap-4 flex-col">
                   <div className="grid grid-cols-1 w-full gap-5">
                     <div className="grid gap-3">
@@ -87,9 +116,14 @@ export default function SignUp() {
                   <div className="flex flex-col items-center justify-center gap-3">
                     <button
                       type="submit"
-                      className="w-40 p-3 text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 rounded-lg hover:text-black hover:bg-gradient-to-r hover:from-white hover:via-white hover:to-white hover:font-bold"
+                      className={`w-40 p-3 text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 rounded-lg hover:text-black hover:bg-none hover:bg-white hover:font-bold ${
+                        isSubmitting
+                          ? "opacity-50 !bg-white !bg-none text-black font-bold"
+                          : ""
+                      }`}
+                      disabled={isSubmitting}
                     >
-                      Sign Up
+                      {!isSubmitting ? "Sign Up" : "Signing Up..."}
                     </button>
                   </div>
 
