@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,15 +5,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const backendApi = import.meta.env.VITE_BACKEND_API_URL;
   const loginSchema = Yup.object().shape({
     username: Yup.string()
       .min(2, "Too Short!")
@@ -31,6 +29,7 @@ export default function Login() {
   });
 
   const { login } = useAuth();
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex justify-center items-center">
       <div className="flex flex-col gap-6 bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 rounded-xl p-[2px] mt-20">
@@ -52,6 +51,7 @@ export default function Login() {
                 let data = await login(values);
                 console.log(data);
                 setSubmitting(false);
+                if (data.success) navigate("/");
               }}
             >
               {({ errors, touched, isSubmitting }) => (

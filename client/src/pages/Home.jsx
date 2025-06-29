@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Home() {
   let navigate = useNavigate();
@@ -16,8 +17,10 @@ export default function Home() {
           your Akhand Jyot burning at the temple when you visit.
         </p>
         <Button
-          className="text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 p-6 px-8 rounded-lg font-bold"
-          onClick={onClickHandler}
+          className="text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 p-6 px-8 rounded-lg font-bold cursor-pointer"
+          onClick={(e) => {
+            onClickHandler(e);
+          }}
         >
           Light Up!
         </Button>

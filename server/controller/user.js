@@ -117,5 +117,5 @@ module.exports.logout = async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   });
-  res.send(`${foundUser} successfully logged out`);
+  res.status(200).send({ _id: foundUser._id, username: foundUser.username });
 };

@@ -64,7 +64,15 @@ export default function Header() {
           </NavLink>
         ) : null}
         {user ? (
-          <button onClick={logout}>Log Out</button>
+          <button
+            className="cursor-pointer"
+            onClick={async (e) => {
+              let data = await logout();
+              console.log(data);
+            }}
+          >
+            Log Out
+          </button>
         ) : (
           <NavLink
             to="/login"

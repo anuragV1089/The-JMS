@@ -9,12 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function SignUp() {
-  const backendApi = import.meta.env.VITE_BACKEND_API_URL;
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
       .min(2, "Too Short!")
@@ -52,6 +50,7 @@ export default function SignUp() {
   //     .catch((err) => console.log(err));
   // };
   const { signup } = useAuth();
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex justify-center items-center">
       <div className="flex flex-col gap-6 bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 rounded-xl p-[2px] mt-20 ">
@@ -73,6 +72,7 @@ export default function SignUp() {
                 let data = await signup(values);
                 console.log(data);
                 setSubmitting(false);
+                navigate("/");
               }}
             >
               {({ errors, touched, isSubmitting }) => (

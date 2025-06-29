@@ -2,7 +2,19 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function JyotCard({ className, ...props }: React.ComponentProps<"div">) {
+interface JyotCardProps extends React.ComponentProps<"div"> {
+  name?: string;
+  type?: string;
+  number?: number;
+}
+
+export function JyotCard({
+  className,
+  name,
+  type,
+  number,
+  ...props
+}: JyotCardProps) {
   return (
     <div
       className={cn(
@@ -13,7 +25,7 @@ export function JyotCard({ className, ...props }: React.ComponentProps<"div">) {
     >
       <Card className="bg-black text-white p-8 h-75 flex">
         <CardHeader>
-          <CardTitle className="text-4xl mb-4">Mr. Whatever Verma</CardTitle>
+          <CardTitle className="text-4xl mb-4">{name}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-2 px-5">
@@ -22,8 +34,8 @@ export function JyotCard({ className, ...props }: React.ComponentProps<"div">) {
               <p className="text-center">Number</p>
             </div>
             <div className="flex justify-between">
-              <p className="text-3xl font-bold text-center">OIL</p>
-              <p className="text-3xl font-bold">582</p>
+              <p className="text-3xl font-bold text-center">{type}</p>
+              <p className="text-3xl font-bold">{number}</p>
             </div>
           </div>
           <div className="mt-4 flex gap-5 justify-center">

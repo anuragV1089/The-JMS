@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const backendApi = import.meta.env.VITE_BACKEND_API_URL;
 const AuthContext = createContext();
@@ -33,12 +34,14 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       console.error("Auth Check Failed", err);
+      toast.error(err.response.data.message + "Please Login again!");
     } finally {
       setLoading(false);
     }
   };
 
   const login = async (userData) => {
+    const loadingToast = toast.loading("Logging out...");
     try {
       let res = {};
       await axios
@@ -48,16 +51,20 @@ export const AuthProvider = ({ children }) => {
         .then((response) => {
           setAccessToken(response.data.accessToken);
           setUser(response.data.user);
+          toast.dismiss(loadingToast);
+          toast.success("Welcome Back!", { icon: "👋" });
           res = { success: true, data: response.data };
         })
         .catch((err) => {
           console.log(err);
+          toast.dismiss(loadingToast);
+          toast.error(err.response.data.message);
           res = { success: false, message: err.response.data.message };
         });
 
       return res;
     } catch (err) {
-      return { success: false, message: err.message };
+      return { success: false, message: err.response.data.message };
     }
   };
 
@@ -69,7 +76,9 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         })
         .then(async (response) => {
-          res = await login(userData);
+          res = await toast.promise(login(userData), {
+            success: "Successfully Signed In!",
+          });
         })
         .catch((err) => {
           res = { success: false, error: err.message };
@@ -78,22 +87,27 @@ export const AuthProvider = ({ children }) => {
       return res;
     } catch (err) {
       console.error(`Tagda error ${err.message}`);
-      return { success: false, error: err.message };
+      return { success: false, error: err.response.data.message };
     }
   };
 
   const logout = async () => {
     try {
+      let res = {};
       await axios
         .get(`${backendApi}/users/logout`, {
           withCredentials: true,
         })
         .then((res) => {
           console.log(res.data);
+          toast.success("You're logged out!", { icon: "👋" });
           setAccessToken(null);
           setUser(null);
+          res = { success: true, data: res.data };
         });
+      return res;
     } catch (err) {
+      return { success: false, data: err.response.data.message };
       console.error(`Logout Error ${err}`);
     }
   };
@@ -108,6 +122,7 @@ export const AuthProvider = ({ children }) => {
         .then((res) => {
           const data = res.data;
           setAccessToken(data.accessToken);
+          console.log(data.accessToken);
           res = data.accessToken;
         })
         .catch(async (err) => {
