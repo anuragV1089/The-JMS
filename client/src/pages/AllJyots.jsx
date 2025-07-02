@@ -8,29 +8,27 @@ export default function AllJyots() {
   let [tokens, setTokens] = useState([
     {
       name: "Anurag",
-      type: "OIl",
+      type: "Oil",
       number: 205,
     },
   ]);
-  const { refreshToken, accessToken } = useAuth();
+  const { isAuthenticated, accessToken, refreshToken } = useAuth();
   useEffect(() => {
-    refreshToken();
+    console.log(`I'm in useEffect() ><`);
     getAllTokens();
-  }, []);
+  }, [accessToken]);
 
   const getAllTokens = async () => {
     try {
-      console.log(accessToken);
-      let apiClient = protectedCall(accessToken);
+      let apiClient = protectedCall(accessToken + "dsaf");
       await apiClient
         .get("/tokens")
-        .then((res) => {
-          setTokens(...res.data);
-          console.log(tokens);
-          console.log(res.data);
+        .then(async (res) => {
+          setTokens([...res.data]);
         })
-        .catch((err) => {
-          console.log(err.response.data.message);
+        .catch(async (err) => {
+          await refreshToken();
+          console.log(err);
         });
     } catch (err) {
       console.log(err.message);
@@ -80,14 +78,15 @@ export default function AllJyots() {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 p-10">
-        {tokens.map((token, idx) => {
+        {tokens.map((token, idx) => (
           <JyotCard
+            key={idx}
             className="w-auto"
             name={token.name}
             type={token.type}
             number={token.number}
-          />;
-        })}
+          />
+        ))}
       </div>
     </div>
   );

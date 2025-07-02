@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -138,16 +138,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const value = {
-    accessToken,
-    user,
-    loading,
-    login,
-    signup,
-    logout,
-    refreshToken,
-    isAuthenticated: !!accessToken,
-  };
+  useEffect(() => {
+    console.log("🔑 Access token changed:", {
+      token: accessToken ? `${accessToken.substring(0, 10)}...` : null,
+      timestamp: new Date().toISOString(),
+    });
+  }, [accessToken]);
+
+  const value = useMemo(
+    () => ({
+      accessToken,
+      user,
+      loading,
+      login,
+      signup,
+      logout,
+      refreshToken,
+      isAuthenticated: !!accessToken,
+    }),
+    [accessToken, user]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

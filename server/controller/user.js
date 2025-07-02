@@ -68,26 +68,31 @@ module.exports.refresh = async (req, res) => {
   const refreshToken = cookies.jwtRefresh;
 
   await User.findOne({ refreshToken: refreshToken }).then((user) => {
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, decoded) => {
-      if (err || user._id.toString() !== decoded.sub.toString()) {
-        throw new ExpressError(401, `Invalid refresh Token`);
-      }
-
-      jwt.sign(
-        { sub: user._id, username: user.username },
-        process.env.ACCESS_TOKEN,
-        {
-          expiresIn: "15m",
-        },
-        (err, token) => {
-          if (err) throw new ExpressError(500, `Can't sign token`);
-          res.send({
-            accessToken: token.accessToken,
-            user: { _id: user._id, username: user.username },
-          });
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN,
+      async (err, decoded) => {
+        if (err || user._id.toString() !== decoded.sub.toString()) {
+          throw new ExpressError(401, `Invalid refresh Token`);
         }
-      );
-    });
+
+        jwt.sign(
+          { sub: user._id, username: user.username },
+          process.env.ACCESS_TOKEN,
+          {
+            expiresIn: "15m",
+          },
+          (err, token) => {
+            if (err) throw new ExpressError(500, `Can't sign token`);
+            console.log(token);
+            res.send({
+              accessToken: token,
+              user: { _id: user._id, username: user.username },
+            });
+          }
+        );
+      }
+    );
   });
 };
 
