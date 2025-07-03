@@ -60,7 +60,6 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.refresh = async (req, res) => {
   const cookies = req.cookies;
-
   if (!cookies?.jwtRefresh) {
     throw new ExpressError(400, `No refresh Token Found`);
   }
@@ -85,6 +84,7 @@ module.exports.refresh = async (req, res) => {
           (err, token) => {
             if (err) throw new ExpressError(500, `Can't sign token`);
             console.log(token);
+            console.log(`it came here`);
             res.send({
               accessToken: token,
               user: { _id: user._id, username: user.username },

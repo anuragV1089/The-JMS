@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { setUpAxiosInterceptor } from "../lib/axiosInterceptor";
 
 const backendApi = import.meta.env.VITE_BACKEND_API_URL;
 const AuthContext = createContext();
@@ -107,8 +108,8 @@ export const AuthProvider = ({ children }) => {
         });
       return res;
     } catch (err) {
-      return { success: false, data: err.response.data.message };
       console.error(`Logout Error ${err}`);
+      return { success: false, data: err.response.data.message };
     }
   };
 
@@ -119,31 +120,33 @@ export const AuthProvider = ({ children }) => {
         .get(`${backendApi}/users/refresh`, {
           withCredentials: true,
         })
-        .then((res) => {
-          const data = res.data;
+        .then((response) => {
+          const data = response.data;
           setAccessToken(data.accessToken);
           console.log(data.accessToken);
-          res = data.accessToken;
-        })
-        .catch(async (err) => {
-          await logout();
-          res = null;
+          res = { success: true, data: data.accessToken };
         });
-
       return res;
     } catch (err) {
       console.error(`Token refresh Failed ${err}`);
       await logout();
-      return null;
+      toast.error("Please Login again!");
+      return { success: false, data: err.response.data.message };
     }
   };
 
+  // useEffect(() => {
+  //   console.log("🔑 Access token changed:", {
+  //     token: accessToken ? `${accessToken.substring(0, 10)}...` : null,
+  //     timestamp: new Date().toISOString(),
+  //   });
+  // }, [accessToken]);
+
   useEffect(() => {
-    console.log("🔑 Access token changed:", {
-      token: accessToken ? `${accessToken.substring(0, 10)}...` : null,
-      timestamp: new Date().toISOString(),
-    });
-  }, [accessToken]);
+    if (refreshToken) {
+      setUpAxiosInterceptor(refreshToken);
+    }
+  });
 
   const value = useMemo(
     () => ({

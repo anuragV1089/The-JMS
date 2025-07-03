@@ -2,7 +2,8 @@ import { JyotCard } from "@/components/JyotCard";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { protectedCall } from "../lib/helpers";
+import api, { getAccessToken } from "../lib/axiosApi";
+import toast from "react-hot-toast";
 
 export default function AllJyots() {
   let [tokens, setTokens] = useState([
@@ -12,26 +13,23 @@ export default function AllJyots() {
       number: 205,
     },
   ]);
-  const { isAuthenticated, accessToken, refreshToken } = useAuth();
+  const { accessToken } = useAuth();
   useEffect(() => {
-    console.log(`I'm in useEffect() ><`);
+    getAccessToken(accessToken);
     getAllTokens();
-  }, [accessToken]);
+  }, []);
 
   const getAllTokens = async () => {
     try {
-      let apiClient = protectedCall(accessToken + "dsaf");
-      await apiClient
-        .get("/tokens")
-        .then(async (res) => {
-          setTokens([...res.data]);
-        })
-        .catch(async (err) => {
-          await refreshToken();
-          console.log(err);
-        });
+      const tokenData = await api.get("/tokens");
+      if (tokenData) {
+        setTokens([...tokenData.data]);
+      } else {
+        toast.error(`You're unauthorized!`);
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
+      toast.error(err.message);
     }
   };
   return (
