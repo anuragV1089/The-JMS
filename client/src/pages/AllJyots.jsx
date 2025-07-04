@@ -2,7 +2,7 @@ import { JyotCard } from "@/components/JyotCard";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import api, { getAccessToken } from "../lib/axiosApi";
+import api from "../lib/axiosApi";
 import toast from "react-hot-toast";
 
 export default function AllJyots() {
@@ -13,9 +13,7 @@ export default function AllJyots() {
       number: 205,
     },
   ]);
-  const { accessToken } = useAuth();
   useEffect(() => {
-    getAccessToken(accessToken);
     getAllTokens();
   }, []);
 

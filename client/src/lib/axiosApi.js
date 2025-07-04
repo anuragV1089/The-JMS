@@ -2,6 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const backendApi = import.meta.env.VITE_BACKEND_API_URL;
+
 let accessToken = 0;
 export const getAccessToken = (token) => {
   accessToken = token;

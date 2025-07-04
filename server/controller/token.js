@@ -20,7 +20,7 @@ module.exports.newToken = async (req, res) => {
   await Token.insertMany(newTokens)
     .then((result) => {
       console.log(result);
-      res.send(result);
+      res.send({ success: true, data: result });
     })
     .catch((err) => {
       console.log(err);

@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { setUpAxiosInterceptor } from "../lib/axiosInterceptor";
+import { getAccessToken } from "../lib/axiosApi";
 
 const backendApi = import.meta.env.VITE_BACKEND_API_URL;
 const AuthContext = createContext();
@@ -146,7 +147,13 @@ export const AuthProvider = ({ children }) => {
     if (refreshToken) {
       setUpAxiosInterceptor(refreshToken);
     }
-  });
+  }, []);
+
+  useEffect(() => {
+    if (accessToken) {
+      getAccessToken(accessToken);
+    }
+  }, [accessToken]);
 
   const value = useMemo(
     () => ({
