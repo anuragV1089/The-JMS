@@ -1,13 +1,10 @@
 import { useAuth } from "../context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 export default function ProtectedRoute() {
   const { accessToken, isAuthenticated } = useAuth();
 
-  if (!isAuthenticated) {
-    console.log(`inside protectedRoute`);
-    return <div>Loading...</div>;
-  }
-
-  return <Outlet />;
+  return isAuthenticated ? <Outlet /> : null;
 }

@@ -8,5 +8,7 @@ const razorpay = new Razorpay({
 
 export const createRazorpayOrder = async (req, res) => {
   try {
-  } catch (err) {}
+  } catch (err) {
+    next(err);
+  }
 };

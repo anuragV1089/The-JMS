@@ -20,6 +20,7 @@ export default function AllJyots() {
   const getAllTokens = async () => {
     try {
       const tokenData = await api.get("/tokens");
+      console.log(`this is tokenData ${tokenData}`);
       if (tokenData) {
         setTokens([...tokenData.data]);
       } else {

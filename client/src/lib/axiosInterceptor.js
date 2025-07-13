@@ -22,6 +22,7 @@ export const setUpAxiosInterceptor = (refreshToken) => {
             console.log(originalRequest);
             return api(originalRequest);
           } else {
+            console.log("I'm here");
             toast.error(refreshResponse.data);
           }
         } catch (error) {
