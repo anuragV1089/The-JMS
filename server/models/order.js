@@ -7,8 +7,9 @@ const orderSchema = Schema({
     required: true,
   },
   razorpay_payment_id: String,
-  razorpay_signature: String,
   amount: Number,
+  currency: String,
+  recieptId: String,
   status: String,
   paymentVerified: {
     type: Boolean,

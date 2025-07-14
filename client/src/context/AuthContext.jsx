@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (userData) => {
-    const loadingToast = toast.loading("Logging out...");
+    const loadingToast = toast.loading("Logging in...");
     try {
       let res = {};
       await axios

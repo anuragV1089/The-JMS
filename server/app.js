@@ -17,6 +17,7 @@ const LocalStrategy = require("passport-local");
 //routers
 const tokenRouter = require("./routes/token");
 const userRouter = require("./routes/user");
+const paymentRouter = require("./routes/payment");
 //cookie
 const cookieParser = require("cookie-parser");
 //Error Handling
@@ -48,6 +49,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 //Routes
 app.use("/tokens", tokenRouter);
 app.use("/users", userRouter);
+app.use("/payment", paymentRouter);
 
 app.all("*url", (req, res) => {
   let { url } = req.params;
