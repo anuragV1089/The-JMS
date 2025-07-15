@@ -22,8 +22,8 @@ const router = createBrowserRouter(
       <Route index element={<Home />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/jyots" element={<AllJyots />} />
+        <Route path="/jyots/new" element={<NewJyot />} />
       </Route>
-      <Route path="/jyots/new" element={<NewJyot />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
     </Route>

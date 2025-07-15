@@ -10,4 +10,10 @@ router.post(
   wrapAsync(razorpayController.createRazorpayOrder)
 );
 
+router.post(
+  "/verify",
+  passport.authenticate("jwt", { session: false }),
+  wrapAsync(razorpayController.verifyRazorpayPayment)
+);
+
 module.exports = router;

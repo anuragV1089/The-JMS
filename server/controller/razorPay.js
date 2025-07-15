@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const Order = require("../models/order");
 const ExpressError = require("../utils/ExpressError");
+const crypto = require("crypto");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -25,6 +26,7 @@ module.exports.createRazorpayOrder = async (req, res) => {
         razorpay_order_id: order.id,
         receiptId: receiptId,
         status: order.status,
+        doneBy: username,
       });
 
       newOrder
@@ -48,6 +50,7 @@ module.exports.createRazorpayOrder = async (req, res) => {
 
 module.exports.verifyRazorpayPayment = async (req, res) => {
   try {
+    console.log("Its here");
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
 
@@ -63,7 +66,7 @@ module.exports.verifyRazorpayPayment = async (req, res) => {
       });
 
       if (order) {
-        const updation = awaitOrder.findByIdAndUpdate(order._id, {
+        const updation = await Order.findByIdAndUpdate(order._id, {
           razorpay_payment_id: razorpay_payment_id,
           status: "verified",
           paymentVerified: true,
@@ -79,6 +82,7 @@ module.exports.verifyRazorpayPayment = async (req, res) => {
       res.status(400).json({ success: false, message: `Invalid Signature` });
     }
   } catch (error) {
+    console.log(error);
     throw new ExpressError(error.status, error.error.description);
   }
 };

@@ -20,11 +20,53 @@ import { useState } from "react";
 import api from "../lib/axiosApi";
 import toast from "react-hot-toast";
 import { DotLoader } from "react-spinners";
-
+import { useAuth } from "../context/AuthContext";
+const amount = 500;
 export default function NewJyot() {
   let [name, setName] = useState("");
   let [type, setType] = useState("");
   let [isSubmitting, setSubmitting] = useState(false);
+  const { user } = useAuth();
+
+  const paymentHandler = async (e) => {
+    e.preventDefault();
+    try {
+      await api
+        .post("/payment/order", {
+          amount: amount * 100,
+          username: user.username,
+        })
+        .then(async (res) => {
+          if (res.data.success) {
+            const order = res.data.order;
+            const options = {
+              key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+              amount: order.amount,
+              currency: order.currency,
+              order_id: order.id,
+              handler: async function (response) {
+                await api
+                  .post("/payment/verify", response)
+                  .then(async (result) => {
+                    toast.success(`Payment Successfull`);
+                    await submitHandler(e);
+                    console.log(result);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              },
+              theme: { color: "#000" },
+            };
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+          }
+        });
+    } catch (error) {
+      console.log(error);
+      toast.error(`There was some error`);
+    }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -71,7 +113,7 @@ export default function NewJyot() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="flex gap-8 flex-col" onSubmit={submitHandler}>
+                <form className="flex gap-8 flex-col" onSubmit={paymentHandler}>
                   <div className="flex w-full justify-between items-center gap-6">
                     <div className="grid gap-3 w-full">
                       <Label className="text-2xl pl-3" htmlFor="name">

@@ -6,5 +6,9 @@ import { useEffect } from "react";
 export default function ProtectedRoute() {
   const { accessToken, isAuthenticated } = useAuth();
 
-  return isAuthenticated ? <Outlet /> : null;
+  return isAuthenticated ? (
+    <Outlet />
+  ) : (
+    <> {toast.error(`You're logged out! Please Login to see content`)}</>
+  );
 }
