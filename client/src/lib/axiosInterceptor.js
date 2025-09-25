@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import api from "./axiosApi";
 import toast from "react-hot-toast";
 
@@ -22,7 +23,6 @@ export const setUpAxiosInterceptor = (refreshToken) => {
             console.log(originalRequest);
             return api(originalRequest);
           } else {
-            console.log("I'm here");
             toast.error(refreshResponse.data);
           }
         } catch (error) {
@@ -30,6 +30,8 @@ export const setUpAxiosInterceptor = (refreshToken) => {
           console.log(error);
         }
       }
+
+      return Promise.reject(error);
     }
   );
 };

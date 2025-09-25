@@ -15,14 +15,21 @@ import Layout from "./components/Layout/Layout.jsx";
 import NewJyot from "./pages/NewJyot.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AllTemples from "./pages/AllTemples.jsx";
+import Temple from "./pages/Temple.jsx";
+import NewTemple from "./pages/NewTemple.jsx";
+import Profile from "./components/Profile.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
       <Route index element={<Home />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="/jyots" element={<AllJyots />} />
-        <Route path="/jyots/new" element={<NewJyot />} />
+        <Route path="/temples" element={<AllTemples />} />
+        <Route path="/temples/new" element={<NewTemple />} />
+        <Route path="/temples/:id" element={<Temple />} />
+        <Route path="/jyots/:id/new" element={<NewJyot />} />
+        <Route path="/:id/jyots" element={<AllJyots />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />

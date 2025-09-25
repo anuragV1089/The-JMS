@@ -21,13 +21,15 @@ import api from "../lib/axiosApi";
 import toast from "react-hot-toast";
 import { DotLoader } from "react-spinners";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
 const amount = 500;
 export default function NewJyot() {
   let [name, setName] = useState("");
   let [type, setType] = useState("");
   let [isSubmitting, setSubmitting] = useState(false);
   const { user } = useAuth();
-
+  const navigate = useNavigate();
+  const { id } = useParams();
   const paymentHandler = async (e) => {
     e.preventDefault();
     try {
@@ -51,6 +53,7 @@ export default function NewJyot() {
                     toast.success(`Payment Successfull`);
                     await submitHandler(e);
                     console.log(result);
+                    navigate(`temples/${id}`);
                   })
                   .catch((err) => {
                     console.log(err);
@@ -67,28 +70,22 @@ export default function NewJyot() {
       toast.error(`There was some error`);
     }
   };
-
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       setSubmitting(true);
-      let formData = [{ name: name, type: type }];
-      api
-        .post("/tokens/new", formData)
-        .then(async (response) => {
-          if (response.data.success) {
-            toast.success(`Your Jyot will be enlightened!`);
-            setName("");
-            setType("");
-          }
-        })
-        .catch((err) => {
-          toast.error(err.response.data.message);
-        });
-      setSubmitting(false);
+      let formData = { name: name, type: type };
+      let response = await api.post(`/tokens/${id}/new`, formData);
+      if (response) {
+        toast.success(`Your Jyot will be enlightened!`);
+        setName("");
+        setType("");
+        navigate(`/temples/${id}`);
+      }
     } catch (error) {
-      toast.error(err.message + " Please Retry!");
+      toast.error(error.response.data.message + "! Fill all fields!");
     }
+    setSubmitting(false);
   };
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -113,7 +110,7 @@ export default function NewJyot() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="flex gap-8 flex-col" onSubmit={paymentHandler}>
+                <form className="flex gap-8 flex-col" onSubmit={submitHandler}>
                   <div className="flex w-full justify-between items-center gap-6">
                     <div className="grid gap-3 w-full">
                       <Label className="text-2xl pl-3" htmlFor="name">
@@ -132,7 +129,7 @@ export default function NewJyot() {
                       />
                     </div>
                     <div className="w-fit h-fit p-[2px] bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 rounded-lg mt-10">
-                      <Select value={type} onValueChange={setType}>
+                      <Select value={type} onValueChange={setType} required>
                         <SelectTrigger className="w-44 p-8 text-2xl !text-white border-0 bg-black">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
@@ -156,12 +153,13 @@ export default function NewJyot() {
                     </div>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-3">
-                    <Button
+                    <button
                       type="submit"
-                      className="w-50 p-6 text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 cursor-pointer"
+                      className="w-auto p-3 rounded-lg text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 cursor-pointer
+                      hover:bg-gradient-to-r hover:from-white hover:via-white hover:to-white hover:text-black hover:font-bold transition-colors duration-300"
                     >
                       Move to Payment
-                    </Button>
+                    </button>
                   </div>
 
                   <div className="mt-4 text-center text-sm">

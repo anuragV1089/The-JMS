@@ -4,30 +4,25 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../lib/axiosApi";
 import toast from "react-hot-toast";
+import { TokenProvider } from "@/context/TokenContext";
 
 export default function AllJyots() {
-  let [tokens, setTokens] = useState([
-    {
-      name: "Anurag",
-      type: "Oil",
-      number: 205,
-    },
-  ]);
+  const [editingTokenId, setEditingTokenId] = useState(null);
+  let [tokens, setTokens] = useState([{}]);
+  const { user } = useAuth();
   useEffect(() => {
     getAllTokens();
-  }, []);
+  }, [editingTokenId]);
 
   const getAllTokens = async () => {
     try {
-      const tokenData = await api.get("/tokens");
-      console.log(`this is tokenData ${tokenData}`);
+      const tokenData = await api.get(`tokens/${user._id}/view`);
       if (tokenData) {
         setTokens([...tokenData.data]);
       } else {
         toast.error(`You're unauthorized!`);
       }
     } catch (err) {
-      console.log(err);
       toast.error(err.message);
     }
   };
@@ -75,15 +70,24 @@ export default function AllJyots() {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 p-10">
-        {tokens.map((token, idx) => (
-          <JyotCard
-            key={idx}
-            className="w-auto"
-            name={token.name}
-            type={token.type}
-            number={token.number}
-          />
-        ))}
+        <TokenProvider
+          value={{ tokens, setTokens, editingTokenId, setEditingTokenId }}
+        >
+          {tokens.map((token, idx) => (
+            <JyotCard
+              key={idx}
+              _id={token._id}
+              className="w-auto"
+              name={token.name}
+              type={token.type}
+              litAt={token.litAt}
+              number={token.number}
+              isAdmin={token.litAt === user.adminOf}
+              isOwner={token.litBy === user._id}
+              isEditing={editingTokenId === token._id}
+            />
+          ))}
+        </TokenProvider>
       </div>
     </div>
   );

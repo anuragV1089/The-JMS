@@ -2,13 +2,18 @@ const User = require("../models/user");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const ExpressError = require("../utils/ExpressError");
+const redisClient = require("../config/redis");
 
 module.exports.signUp = async (req, res) => {
   let { username, password } = req.body;
-  let registeredUser = await User.register({ username }, password);
-  res
-    .status(200)
-    .send(`User registered successfully with username- ${username}`);
+  try {
+    let registeredUser = await User.register({ username }, password);
+    res
+      .status(200)
+      .send(`User registered successfully with username- ${username}`);
+  } catch (error) {
+    throw new ExpressError(500, `Can't sign in, server issue!`);
+  }
 };
 
 module.exports.login = async (req, res, next) => {
@@ -49,7 +54,7 @@ module.exports.login = async (req, res, next) => {
 
         res.send({
           accessToken: tokens.accessToken,
-          user: { _id: user._id, username: user.username },
+          user: user,
         });
       } catch (err) {
         return next(new ExpressError(500, `Internal Server Error`));
@@ -87,7 +92,7 @@ module.exports.refresh = async (req, res) => {
             console.log(`it came here`);
             res.send({
               accessToken: token,
-              user: { _id: user._id, username: user.username },
+              user: user,
             });
           }
         );
@@ -97,7 +102,30 @@ module.exports.refresh = async (req, res) => {
 };
 
 module.exports.logout = async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   const cookies = req.cookies;
+
+  if (!token) throw new ExpressError(204, "No Access token found");
+
+  try {
+    const decoded = jwt.decode(token);
+    if (!decoded || !decoded.exp) {
+      throw new ExpressError(400, "Invalid Token");
+    }
+
+    const expiry = decoded.exp;
+    const now = Math.floor(Date.now() / 1000);
+    if (expiry > now) {
+      await redisClient.set(token, "blacklisted", {
+        EX: expiry - now,
+        NX: true,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    throw new ExpressError(500, "Could not process logout!");
+  }
 
   if (!cookies?.jwtRefresh) {
     throw new ExpressError(400, "No refress Token present in cookies");
@@ -122,5 +150,11 @@ module.exports.logout = async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   });
-  res.status(200).send({ _id: foundUser._id, username: foundUser.username });
+  res
+    .status(200)
+    .json({
+      _id: foundUser._id,
+      username: foundUser.username,
+      message: `You're logged out!`,
+    });
 };

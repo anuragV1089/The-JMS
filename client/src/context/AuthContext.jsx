@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { setUpAxiosInterceptor } from "../lib/axiosInterceptor";
 import { getAccessToken } from "../lib/axiosApi";
+import api from "../lib/axiosApi";
 
 const backendApi = import.meta.env.VITE_BACKEND_API_URL;
 const AuthContext = createContext();
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         .catch((err) => {
           console.log(err);
           toast.dismiss(loadingToast);
-          toast.error(err.response.data.message);
+          toast.error(err.message);
           res = { success: false, message: err.response.data.message };
         });
 
@@ -78,12 +79,12 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         })
         .then(async (response) => {
-          res = await toast.promise(login(userData), {
-            success: "Successfully Signed In!",
-          });
+          console.log(response);
+          res = await login(userData);
         })
         .catch((err) => {
-          res = { success: false, error: err.message };
+          toast.error(err.response.data.message);
+          res = { success: false, error: err.response.data.message };
         });
 
       return res;
@@ -96,8 +97,11 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       let res = {};
-      await axios
+      await api
         .get(`${backendApi}/users/logout`, {
+          headers: {
+            Authorization: `bearer ${accessToken}`,
+          },
           withCredentials: true,
         })
         .then((res) => {
@@ -164,6 +168,7 @@ export const AuthProvider = ({ children }) => {
       signup,
       logout,
       refreshToken,
+      checkAuthStatus,
       isAuthenticated: !!accessToken,
     }),
     [accessToken, user]

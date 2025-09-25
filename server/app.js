@@ -18,10 +18,13 @@ const LocalStrategy = require("passport-local");
 const tokenRouter = require("./routes/token");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
+const templeRouter = require("./routes/temple");
 //cookie
 const cookieParser = require("cookie-parser");
 //Error Handling
 const ExpressError = require("./utils/ExpressError");
+//Redis
+require("./config/redis");
 
 main()
   .then((res) => {
@@ -50,6 +53,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 app.use("/tokens", tokenRouter);
 app.use("/users", userRouter);
 app.use("/payment", paymentRouter);
+app.use("/temples", templeRouter);
 
 app.all("*url", (req, res) => {
   let { url } = req.params;

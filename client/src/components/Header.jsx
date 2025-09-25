@@ -1,8 +1,26 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState, useRef } from "react";
+import Profile from "./Profile";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [showProfile, setShowProfile] = useState(false);
+  const profileRef = useRef();
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfile(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="bg-black border-b-2 border-b-gray-400 h-24 text-white flex justify-between items-center p-4 pr-12 font-bold absolute z-50 top-0 w-1/1">
       <div className="flex gap-6 text-3xl items-center">
@@ -35,24 +53,24 @@ export default function Header() {
           </svg>
         </NavLink>
         <NavLink
-          to="/jyots"
+          to="/temples"
           className={({ isActive }) =>
             `${isActive ? "underline" : "no-underline"}`
           }
           end
         >
-          All Jyot
+          Temples
         </NavLink>
         <NavLink
-          to="/jyots/new"
+          to="/temples/new"
           className={({ isActive }) =>
             `${isActive ? "underline" : "no-underline"}`
           }
         >
-          New Jyot
+          Add Temple
         </NavLink>
       </div>
-      <div className="text-3xl flex gap-4">
+      <div className="text-3xl flex gap-4 relative">
         {!user ? (
           <NavLink
             to="/signup"
@@ -63,15 +81,28 @@ export default function Header() {
             Sign Up
           </NavLink>
         ) : null}
-        {user ? (
+        {user && !showProfile ? (
           <button
             className="cursor-pointer"
             onClick={async (e) => {
-              let data = await logout();
-              console.log(data);
+              setShowProfile(true);
             }}
           >
-            Log Out
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M40 42V38C40 35.8783 39.1571 33.8434 37.6569 32.3431C36.1566 30.8429 34.1217 30 32 30H16C13.8783 30 11.8434 30.8429 10.3431 32.3431C8.84285 33.8434 8 35.8783 8 38V42M32 14C32 18.4183 28.4183 22 24 22C19.5817 22 16 18.4183 16 14C16 9.58172 19.5817 6 24 6C28.4183 6 32 9.58172 32 14Z"
+                stroke="#B3B3B3"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
         ) : (
           <NavLink
@@ -83,6 +114,11 @@ export default function Header() {
             Log In
           </NavLink>
         )}
+        {showProfile ? (
+          <div className="absolute -left-80 -top-30">
+            <Profile ref={profileRef} />
+          </div>
+        ) : null}
       </div>
     </div>
   );

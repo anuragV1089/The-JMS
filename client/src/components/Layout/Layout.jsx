@@ -12,7 +12,7 @@ export default function Layout() {
       <Toaster
         position="top-center"
         toastOptions={{
-          duration: 4000,
+          duration: 2000,
           style: {
             fontSize: "1.2rem",
             padding: "10px 30px",
