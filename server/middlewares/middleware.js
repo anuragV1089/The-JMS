@@ -14,8 +14,6 @@ module.exports.isAdmin = async (req, res, next) => {
 
   const temple = await Temple.findById(templeId);
   if (!temple) return res.status(404).send(`Temple not found`);
-  console.log(temple.admin);
-  console.log(userId);
   if (temple.admin.toString() === userId) {
     return next();
   } else {
@@ -36,9 +34,7 @@ module.exports.isOwner = async (req, res, next) => {
   if (token.litBy.toString() === userId || temple.admin.toString() === userId)
     return next();
   else
-    res
-      .status(401)
-      .json({
-        message: `You're not the owner of this Jyot and neither the admin!`,
-      });
+    res.status(401).json({
+      message: `You're not the owner of this Jyot and neither the admin!`,
+    });
 };

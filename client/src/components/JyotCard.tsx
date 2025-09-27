@@ -50,12 +50,12 @@ export function JyotCard({
       });
       if (response) {
         setEditingTokenId("");
-        isEditing = false;
       }
       toast.success(response.data.message);
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
+    isEditing = false;
   }
   async function handleDelete() {
     try {
@@ -131,9 +131,8 @@ export function JyotCard({
                 </Button>
                 <Button onClick={handleDelete}>Delete</Button>
               </>
-            ) : (
-              <Button onClick={handleSubmit}>Submit</Button>
-            )}
+            ) : null}
+            {isEditing ? <Button onClick={handleSubmit}>Submit</Button> : null}
           </div>
         </CardContent>
       </Card>

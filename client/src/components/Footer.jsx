@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <div className="relative bottom-0 w-1/1 border-t-2 border-gray-400 p-4 bg-black min-h-24 text-white flex justify-around items-center">
+    <div className="relative bottom-0 w-1/1 border-t-2 rounded-t-full border-gray-400 p-4 bg-black min-h-24 text-white flex justify-around items-center">
       <div className="flex flex-col items-center gap-5">
         <svg
           width="90"
@@ -34,7 +34,7 @@ export default function Footer() {
         </p>
       </div>
       <div>
-        <p className="text-3xl w-60">@JMS</p>
+        <p className="text-3xl w-60">@JyotiKalash</p>
         <p className="text-3xl w-60">Contact us</p>
       </div>
     </div>

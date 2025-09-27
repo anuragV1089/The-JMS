@@ -28,27 +28,6 @@ export default function SignUp() {
     // ),
   });
 
-  // const signUp = async (values) => {
-  //   await axios
-  //     .post(`${backendApi}/users/signup`, values)
-  //     .then(async (response) => {
-  //       const userData = {
-  //         username: values.username,
-  //         password: values.password,
-  //       };
-  //       await axios
-  //         .post(`${backendApi}/users/login`, userData, {
-  //           withCredentials: true,
-  //         })
-  //         .then((response2) => {
-  //           console.log(response2);
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //         });
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
   const { signup } = useAuth();
   const navigate = useNavigate();
   return (
@@ -70,7 +49,6 @@ export default function SignUp() {
               validationSchema={SignupSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 let data = await signup(values);
-                console.log(data);
                 setSubmitting(false);
                 navigate("/");
               }}

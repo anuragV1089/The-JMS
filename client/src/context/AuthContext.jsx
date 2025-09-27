@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
       }
     } catch (err) {
-      console.error("Auth Check Failed", err);
       toast.error(err.response.data.message + "Please Login again!");
     } finally {
       setLoading(false);
@@ -59,7 +58,6 @@ export const AuthProvider = ({ children }) => {
           res = { success: true, data: response.data };
         })
         .catch((err) => {
-          console.log(err);
           toast.dismiss(loadingToast);
           toast.error(err.message);
           res = { success: false, message: err.response.data.message };
@@ -79,7 +77,6 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         })
         .then(async (response) => {
-          console.log(response);
           res = await login(userData);
         })
         .catch((err) => {
@@ -89,7 +86,6 @@ export const AuthProvider = ({ children }) => {
 
       return res;
     } catch (err) {
-      console.error(`Tagda error ${err.message}`);
       return { success: false, error: err.response.data.message };
     }
   };
@@ -105,7 +101,6 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data);
           toast.success("You're logged out!", { icon: "👋" });
           setAccessToken(null);
           setUser(null);
@@ -113,7 +108,6 @@ export const AuthProvider = ({ children }) => {
         });
       return res;
     } catch (err) {
-      console.error(`Logout Error ${err}`);
       return { success: false, data: err.response.data.message };
     }
   };
@@ -128,24 +122,15 @@ export const AuthProvider = ({ children }) => {
         .then((response) => {
           const data = response.data;
           setAccessToken(data.accessToken);
-          console.log(data.accessToken);
           res = { success: true, data: data.accessToken };
         });
       return res;
     } catch (err) {
-      console.error(`Token refresh Failed ${err}`);
       await logout();
       toast.error("Please Login again!");
       return { success: false, data: err.response.data.message };
     }
   };
-
-  // useEffect(() => {
-  //   console.log("🔑 Access token changed:", {
-  //     token: accessToken ? `${accessToken.substring(0, 10)}...` : null,
-  //     timestamp: new Date().toISOString(),
-  //   });
-  // }, [accessToken]);
 
   useEffect(() => {
     if (refreshToken) {

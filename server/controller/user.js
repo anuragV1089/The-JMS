@@ -63,42 +63,44 @@ module.exports.login = async (req, res, next) => {
   )(req, res, next);
 };
 
-module.exports.refresh = async (req, res) => {
+module.exports.refresh = async (req, res, next) => {
   const cookies = req.cookies;
-  if (!cookies?.jwtRefresh) {
-    throw new ExpressError(400, `No refresh Token Found`);
-  }
+  try {
+    if (!cookies?.jwtRefresh) {
+      throw new ExpressError(400, `No refresh Token Found`);
+    }
 
-  const refreshToken = cookies.jwtRefresh;
+    const refreshToken = cookies.jwtRefresh;
 
-  await User.findOne({ refreshToken: refreshToken }).then((user) => {
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN,
-      async (err, decoded) => {
-        if (err || user._id.toString() !== decoded.sub.toString()) {
-          throw new ExpressError(401, `Invalid refresh Token`);
-        }
-
-        jwt.sign(
-          { sub: user._id, username: user.username },
-          process.env.ACCESS_TOKEN,
-          {
-            expiresIn: "15m",
-          },
-          (err, token) => {
-            if (err) throw new ExpressError(500, `Can't sign token`);
-            console.log(token);
-            console.log(`it came here`);
-            res.send({
-              accessToken: token,
-              user: user,
-            });
+    await User.findOne({ refreshToken: refreshToken }).then((user) => {
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN,
+        async (err, decoded) => {
+          if (err || (user && user._id.toString()) !== decoded.sub.toString()) {
+            return next(new ExpressError(401, `Invalid refresh Token`));
           }
-        );
-      }
-    );
-  });
+
+          jwt.sign(
+            { sub: user._id, username: user.username },
+            process.env.ACCESS_TOKEN,
+            {
+              expiresIn: "15m",
+            },
+            (err, token) => {
+              if (err) throw new ExpressError(500, `Can't sign token`);
+              res.send({
+                accessToken: token,
+                user: user,
+              });
+            }
+          );
+        }
+      );
+    });
+  } catch (error) {
+    throw new ExpressError(401, `Invalid refresh token`);
+  }
 };
 
 module.exports.logout = async (req, res) => {
@@ -128,7 +130,7 @@ module.exports.logout = async (req, res) => {
   }
 
   if (!cookies?.jwtRefresh) {
-    throw new ExpressError(400, "No refress Token present in cookies");
+    res.status(200).json({ message: `You're already logged out!` });
   }
 
   const refreshToken = await cookies.jwtRefresh;
@@ -150,11 +152,9 @@ module.exports.logout = async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   });
-  res
-    .status(200)
-    .json({
-      _id: foundUser._id,
-      username: foundUser.username,
-      message: `You're logged out!`,
-    });
+  res.status(200).json({
+    _id: foundUser._id,
+    username: foundUser.username,
+    message: `You're logged out!`,
+  });
 };

@@ -18,7 +18,6 @@ module.exports.createRazorpayOrder = async (req, res) => {
       receipt: "#" + receiptId,
     };
     const order = await razorpay.orders.create(options);
-    console.log(order);
     if (order) {
       const newOrder = new Order({
         amount: order.amount,
@@ -29,14 +28,7 @@ module.exports.createRazorpayOrder = async (req, res) => {
         doneBy: username,
       });
 
-      newOrder
-        .save()
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((err) => {
-          return next(new ExpressError(500, `Mongoose Error`));
-        });
+      await newOrder.save();
     }
     res.status(200).json({
       success: true,
@@ -50,7 +42,6 @@ module.exports.createRazorpayOrder = async (req, res) => {
 
 module.exports.verifyRazorpayPayment = async (req, res) => {
   try {
-    console.log("Its here");
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
 
@@ -71,8 +62,6 @@ module.exports.verifyRazorpayPayment = async (req, res) => {
           status: "verified",
           paymentVerified: true,
         });
-
-        console.log(updation);
       }
       res.json({
         success: true,

@@ -1,18 +1,18 @@
 const express = require("express");
 const razorpayController = require("../controller/razorPay");
 const router = express.Router();
-const passport = require("passport");
 const wrapAsync = require("../utils/wrapAsync");
+const authenticateToken = require("../middlewares/jwtauthenticate");
 
 router.post(
   "/order",
-  passport.authenticate("jwt", { session: false }),
+  authenticateToken,
   wrapAsync(razorpayController.createRazorpayOrder)
 );
 
 router.post(
   "/verify",
-  passport.authenticate("jwt", { session: false }),
+  authenticateToken,
   wrapAsync(razorpayController.verifyRazorpayPayment)
 );
 

@@ -49,7 +49,6 @@ export default function Login() {
               validationSchema={loginSchema}
               onSubmit={async (values, { setSubmitting }) => {
                 let data = await login(values);
-                console.log(data);
                 setSubmitting(false);
                 if (data.success) navigate("/");
               }}

@@ -53,7 +53,6 @@ module.exports.editToken = async (req, res) => {
       res.status(200).json({ message: `Edit Successful` });
     });
   } catch (error) {
-    console.log(error);
     throw new ExpressError(500, `Internal Server Error`);
   }
 };

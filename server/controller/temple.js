@@ -58,7 +58,6 @@ module.exports.deleteTemple = async (req, res) => {
   let { id } = req.params;
   try {
     let deletedTemple = await Temple.findByIdAndDelete(id);
-    console.log(deletedTemple);
     if (deletedTemple) {
       res
         .status(200)

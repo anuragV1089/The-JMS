@@ -17,10 +17,8 @@ export const setUpAxiosInterceptor = (refreshToken) => {
 
         try {
           const refreshResponse = await refreshToken();
-          console.log(refreshResponse);
           if (refreshResponse.success === true) {
             originalRequest.headers.Authorization = `bearer ${refreshResponse.data}`;
-            console.log(originalRequest);
             return api(originalRequest);
           } else {
             toast.error(refreshResponse.data);

@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controller/user");
 const wrapAsync = require("../utils/wrapAsync");
-const authenticateToken = require("../middlewares/jwtauthenticate");
 
 router.post("/signup", wrapAsync(userController.signUp));
 

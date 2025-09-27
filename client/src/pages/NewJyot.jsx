@@ -52,8 +52,6 @@ export default function NewJyot() {
                   .then(async (result) => {
                     toast.success(`Payment Successfull`);
                     await submitHandler(e);
-                    console.log(result);
-                    navigate(`temples/${id}`);
                   })
                   .catch((err) => {
                     console.log(err);
@@ -110,7 +108,7 @@ export default function NewJyot() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="flex gap-8 flex-col" onSubmit={submitHandler}>
+                <form className="flex gap-8 flex-col" onSubmit={paymentHandler}>
                   <div className="flex w-full justify-between items-center gap-6">
                     <div className="grid gap-3 w-full">
                       <Label className="text-2xl pl-3" htmlFor="name">

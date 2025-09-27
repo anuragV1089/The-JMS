@@ -20,7 +20,6 @@ export default function AllTemples() {
         setTemples([...templeData.data]);
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.message);
     }
   };

@@ -55,7 +55,7 @@ export default function Header() {
         <NavLink
           to="/temples"
           className={({ isActive }) =>
-            `${isActive ? "underline" : "no-underline"}`
+            `${isActive ? "underline" : "no-underline"} hover:underline`
           }
           end
         >
@@ -64,7 +64,7 @@ export default function Header() {
         <NavLink
           to="/temples/new"
           className={({ isActive }) =>
-            `${isActive ? "underline" : "no-underline"}`
+            `${isActive ? "underline" : "no-underline"} hover:underline`
           }
         >
           Add Temple
@@ -75,7 +75,7 @@ export default function Header() {
           <NavLink
             to="/signup"
             className={({ isActive }) =>
-              `${isActive ? "underline" : "no-underline"}`
+              `${isActive ? "underline" : "no-underline"} hover:undeline`
             }
           >
             Sign Up
@@ -83,7 +83,7 @@ export default function Header() {
         ) : null}
         {user && !showProfile ? (
           <button
-            className="cursor-pointer"
+            className="cursor-pointer opacity-80 hover:opacity-100"
             onClick={async (e) => {
               setShowProfile(true);
             }}
@@ -116,7 +116,7 @@ export default function Header() {
         )}
         {showProfile ? (
           <div className="absolute -left-80 -top-30">
-            <Profile ref={profileRef} />
+            <Profile ref={profileRef} setShowProfile={setShowProfile} />
           </div>
         ) : null}
       </div>

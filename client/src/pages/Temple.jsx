@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/AuthContext";
 import { TokenProvider } from "../context/TokenContext";
 import toast from "react-hot-toast";
+import img0 from "../assets/temple (1).jpg";
+import img1 from "../assets/temple.jpg";
+import img2 from "../assets/temple (3).jpg";
+import img3 from "../assets/temple (2).jpg";
+
+const templeUrl = [img0, img1, img2, img3];
 
 export default function Temple() {
   const navigate = useNavigate();
@@ -13,7 +19,13 @@ export default function Temple() {
   const [temple, setTemple] = useState({});
   const [tokens, setTokens] = useState([{}]);
   const [editingTokenId, setEditingTokenId] = useState(null);
+  const [randomIdx, setRandomIdx] = useState(0);
   const { id } = useParams();
+
+  useEffect(() => {
+    setRandomIdx(Math.floor(Math.random() * templeUrl.length));
+  }, [templeUrl.length]);
+
   useEffect(() => {
     getTempleData();
   }, [editingTokenId]);
@@ -26,7 +38,6 @@ export default function Temple() {
         setTokens(response.data.tokens);
       }
     } catch (err) {
-      console.log(err.response.data);
       toast.error(err.response.data.message);
     }
   };
@@ -39,7 +50,12 @@ export default function Temple() {
     <div className="flex justify-center mt-20 min-h-screen text-white">
       <div className="flex flex-col gap-6 min-h-130 w-7xl bg-black rounded-xl p-8">
         <p className="text-5xl font-bold">{temple.templeName}</p>
-        <div className="h-70 w-full rounded-lg bg-amber-500"></div>
+        <div className="h-70 w-full rounded-lg">
+          <img
+            src={templeUrl[randomIdx]}
+            className="h-full w-full object-cover"
+          />
+        </div>
         <div className="flex justify-between items-center">
           <p className="text-4xl text-left flex-4/5">{temple.address}</p>
           <Button

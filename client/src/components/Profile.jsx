@@ -5,7 +5,16 @@ import img from "../assets/profilePic.jpg";
 
 export default function Profile(props) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const handleLogout = async () => {
+    try {
+      const data = await logout();
+      navigate(`/`);
+      props.setShowProfile(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div ref={props.ref} className="mt-30 h-100 w-110">
@@ -27,7 +36,7 @@ export default function Profile(props) {
             >
               Your Jyots
             </Button>
-            {user.adminOf ? (
+            {user && user.adminOf ? (
               <Button
                 className="flex-1/2"
                 onClick={() => {
@@ -39,7 +48,7 @@ export default function Profile(props) {
             ) : null}
           </div>
           <div className="w-full">
-            <Button>Log Out</Button>
+            <Button onClick={handleLogout}>Log Out</Button>
           </div>
         </div>
       </div>

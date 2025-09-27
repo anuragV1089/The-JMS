@@ -7,8 +7,10 @@ export default function ProtectedRoute() {
   return isAuthenticated ? (
     <Outlet />
   ) : (
-    <p className="mt-40 text-white text-3xl">
-      You're Logged Out! Please Log in to see content!
-    </p>
+    <div className="h-screen flex items-center justify-center">
+      <p className="text-white text-3xl">
+        You're Logged Out! Please Log in to see content!
+      </p>
+    </div>
   );
 }

@@ -19,6 +19,7 @@ import AllTemples from "./pages/AllTemples.jsx";
 import Temple from "./pages/Temple.jsx";
 import NewTemple from "./pages/NewTemple.jsx";
 import Profile from "./components/Profile.jsx";
+import JyotCardShow from "./components/JyotCardShow.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
