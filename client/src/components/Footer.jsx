@@ -34,7 +34,7 @@ export default function Footer() {
         </p>
       </div>
       <div>
-        <p className="text-3xl w-60">@JyotiKalash</p>
+        <p className="text-3xl w-60">@JyotiKaksha</p>
         <p className="text-3xl w-60">Contact us</p>
       </div>
     </div>
