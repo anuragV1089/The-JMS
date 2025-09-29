@@ -110,7 +110,7 @@ export default function NewTemple(params) {
                       className="w-auto p-3 rounded-lg text-2xl bg-gradient-to-r from-violet-500 via-red-600 to-yellow-500 cursor-pointer
                       hover:bg-gradient-to-r hover:from-white hover:via-white hover:to-white hover:text-black hover:font-bold transition-colors duration-300"
                     >
-                      Move to Payment
+                      Add Temple
                     </button>
                   </div>
                 </form>

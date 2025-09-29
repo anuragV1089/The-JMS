@@ -31,17 +31,18 @@ export default function AllTemples() {
 
   return (
     <div className="mt-40 items-stretch grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10 p-10">
-      {temples.map((temple, idx) => (
-        <TempleCard
-          key={idx}
-          className="w-auto"
-          name={temple.templeName}
-          address={temple.address}
-          admin={temple.admin}
-          id={temple._id}
-          onClickHandler={onClickHandler}
-        />
-      ))}
+      {temples &&
+        temples.map((temple, idx) => (
+          <TempleCard
+            key={idx}
+            className="w-auto"
+            name={temple.templeName}
+            address={temple.address}
+            admin={temple.admin}
+            id={temple._id}
+            onClickHandler={onClickHandler}
+          />
+        ))}
     </div>
   );
 }

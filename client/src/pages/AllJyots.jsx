@@ -73,20 +73,21 @@ export default function AllJyots() {
         <TokenProvider
           value={{ tokens, setTokens, editingTokenId, setEditingTokenId }}
         >
-          {tokens.map((token, idx) => (
-            <JyotCard
-              key={idx}
-              _id={token._id}
-              className="w-auto"
-              name={token.name}
-              type={token.type}
-              litAt={token.litAt}
-              number={token.number}
-              isAdmin={token.litAt === user.adminOf}
-              isOwner={token.litBy === user._id}
-              isEditing={editingTokenId === token._id}
-            />
-          ))}
+          {tokens &&
+            tokens.map((token, idx) => (
+              <JyotCard
+                key={idx}
+                _id={token._id}
+                className="w-auto"
+                name={token.name}
+                type={token.type}
+                litAt={token.litAt}
+                number={token.number}
+                isAdmin={token.litAt === user.adminOf}
+                isOwner={token.litBy === user._id}
+                isEditing={editingTokenId === token._id}
+              />
+            ))}
         </TokenProvider>
       </div>
     </div>
